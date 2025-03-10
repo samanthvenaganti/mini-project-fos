@@ -1,0 +1,133 @@
+class FoodOrderingSystem:
+    def _init_(self):
+        self.menu = [
+            {"id": 1, "name": "Burger", "price": 120},
+            {"id": 2, "name": "Pizza", "price": 250},
+            {"id": 3, "name": "Pasta", "price": 180},
+            {"id": 4, "name": "Fries", "price": 90},
+        ]  # Array for menu items
+        self.orders = OrderQueue()  # Queue for processing orders
+        self.order_history = OrderHistory()  # Linked List for delivered orders
+        self.undo_stack = UndoStack()  # Stack for undo feature
+
+    def show_menu(self):
+        print("\n🍽 Menu:")
+        for item in self.menu:
+            print(f"{item['id']}. {item['name']} - ₹{item['price']}")
+
+    def place_order(self, item_id):
+        for item in self.menu:
+            if item["id"] == item_id:
+                self.orders.enqueue(item["name"])  # Add to order queue
+                self.undo_stack.push(item["name"])  # Save for undo
+                print(f"Order placed: {item['name']}")
+                return
+        print("Invalid item ID! Please try again.")
+
+    def process_order(self):
+        order = self.orders.dequeue()
+        if order:
+            self.order_history.add_order(order)  # Add to delivered history
+            print(f" Order Processed & Delivered: {order}")
+        else:
+            print("No orders to process.")
+
+    def undo_last_order(self):
+        last_order = self.undo_stack.pop()
+        if last_order:
+            print(f"Undo: {last_order} removed from orders.")
+        else:
+            print("No orders to undo.")
+
+    def show_order_history(self):
+        self.order_history.display_history()
+
+
+class OrderQueue:
+    def _init_(self):
+        self.queue = []
+
+    def enqueue(self, order):
+        self.queue.append(order)
+
+    def dequeue(self):
+        if self.queue:
+            return self.queue.pop(0)  # Remove first order (FIFO)
+        return None
+
+    def is_empty(self):
+        return len(self.queue) == 0
+
+
+class OrderNode:
+    def _init_(self, order_name):
+        self.order_name = order_name
+        self.next = None
+
+
+class OrderHistory:
+    def _init_(self):
+        self.head = None
+
+    def add_order(self, order_name):
+        new_node = OrderNode(order_name)
+        if not self.head:
+            self.head = new_node
+        else:
+            temp = self.head
+            while temp.next:
+                temp = temp.next
+            temp.next = new_node
+
+    def display_history(self):
+        if not self.head:
+            print("No delivered orders yet.")
+            return
+        print("\n Order History:")
+        temp = self.head
+        while temp:
+            print(f"{temp.order_name}")
+            temp = temp.next
+
+
+class UndoStack:
+    def _init_(self):
+        self.stack = []
+
+    def push(self, order):
+        self.stack.append(order)
+
+    def pop(self):
+        return self.stack.pop() if self.stack else None
+
+
+# Main program execution
+system = FoodOrderingSystem()
+
+while True:
+    print("\n Welcome to Online Food Ordering System")
+    print("1. View Menu")
+    print("2. Place Order")
+    print("3. Process Order")
+    print("4. Undo Last Order")
+    print("5. View Order History")
+    print("6. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        system.show_menu()
+    elif choice == "2":
+        item_id = int(input("Enter the menu item ID to order: "))
+        system.place_order(item_id)
+    elif choice == "3":
+        system.process_order()
+    elif choice == "4":
+        system.undo_last_order()
+    elif choice == "5":
+        system.show_order_history()
+    elif choice == "6":
+        print("Exiting... Thank you!")
+        break
+    else:
+        print("Invalid choice! Please try again.")
