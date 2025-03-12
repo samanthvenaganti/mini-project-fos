@@ -1,5 +1,5 @@
 class FoodOrderingSystem:
-    def _init_(self):
+    def __init__(self):
         self.menu = [
             {"id": 1, "name": "Burger", "price": 120},
             {"id": 2, "name": "Pizza", "price": 250},
@@ -11,7 +11,7 @@ class FoodOrderingSystem:
         self.undo_stack = UndoStack()  # Stack for undo feature
 
     def show_menu(self):
-        print("\n🍽 Menu:")
+        print("\n Menu:")
         for item in self.menu:
             print(f"{item['id']}. {item['name']} - ₹{item['price']}")
 
@@ -44,7 +44,7 @@ class FoodOrderingSystem:
 
 
 class OrderQueue:
-    def _init_(self):
+    def __init__(self):
         self.queue = []
 
     def enqueue(self, order):
@@ -60,13 +60,13 @@ class OrderQueue:
 
 
 class OrderNode:
-    def _init_(self, order_name):
+    def __init__(self, order_name):
         self.order_name = order_name
         self.next = None
 
 
 class OrderHistory:
-    def _init_(self):
+    def __init__(self):
         self.head = None
 
     def add_order(self, order_name):
@@ -91,7 +91,7 @@ class OrderHistory:
 
 
 class UndoStack:
-    def _init_(self):
+    def __init__(self):
         self.stack = []
 
     def push(self, order):
